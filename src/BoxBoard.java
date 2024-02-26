@@ -12,7 +12,7 @@ import java.util.*;
  * This class initializes the board, populates it with pieces, and facilitates piece movements.
  */
 public class BoxBoard extends Board{
-    private Colors colors;
+    protected Colors colors;
 
     public BoxBoard(int width, int height, int[][] values) {
         super(width, height, values);
@@ -62,7 +62,7 @@ public class BoxBoard extends Board{
      * "isNorth": indicates whether the piece direction is north (true) or south (false)
      * Returns the ANSI color code for the line
      */
-    private String getLineColor(int row, int col, boolean isNorth) {
+    protected String getLineColor(int row, int col, boolean isNorth) {
 
         List<Piece> pieces = tiles[row][col].getPieces();
         Piece piece = (isNorth) ? pieces.get(0): pieces.get(2);
@@ -82,7 +82,7 @@ public class BoxBoard extends Board{
      * "isWest": indicates whether the piece direction is west (true) or east (false)
      * Returns the ANSI color code for the vertical line
      */
-    private String getVerticalLineColor(int row, int col, boolean isWest) {
+    protected String getVerticalLineColor(int row, int col, boolean isWest) {
 
         List<Piece> pieces = tiles[row][col].getPieces();
         Piece piece = (isWest) ? pieces.get(3): pieces.get(1);

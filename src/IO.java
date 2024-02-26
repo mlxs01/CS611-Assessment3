@@ -12,8 +12,6 @@ import java.util.*;
  */
 public class IO {
     protected static final Scanner scanner = new Scanner(System.in); // So there no multiple instances of scanners
-    public static final int BOARD_MAX_SIZE = 9;
-    public static final int BOARD_MIN_SIZE = 2;
 
     /**
      * Retrieves team information including team name, color, and member names.
@@ -96,12 +94,12 @@ public class IO {
     
     public int getBoardWidth() {
         // Get board width from user
-        return queryInt("Enter the board width (max 9, min 2): ", BOARD_MIN_SIZE, BOARD_MAX_SIZE);
+        return queryInt("Enter the board width (max 9, min 2): ", Constants.BOARD_MIN_SIZE, Constants.BOARD_MAX_SIZE);
     }
     
     public int getBoardHeight() {
         // Get board height from user
-        return queryInt("Enter the board height (max 9, min 2): ", BOARD_MIN_SIZE, BOARD_MAX_SIZE);
+        return queryInt("Enter the board height (max 9, min 2): ", Constants.BOARD_MIN_SIZE, Constants.BOARD_MAX_SIZE);
     }
     
     public int getPieceMove() {
