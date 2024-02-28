@@ -142,6 +142,31 @@ public class IO {
         return value;
     }
 
+    protected String queryString(String prompt){
+        displayMessage(prompt);
+        String input = scanner.nextLine();
+        return input;
+    }
+
+    protected boolean queryBoolean(String prompt, String opt1, String opt2){
+        String input;
+        boolean valid = false;
+    
+        do {
+            displayMessage(prompt + "(" + opt1 + "/" + opt2 + "): ");
+            input = scanner.nextLine().toLowerCase();
+    
+            if (input.equals(opt1) || input.equals(opt2)) {
+                valid = true;
+            } else {
+                displayMessage("Invalid input. Please enter " + opt1 + ", " + opt2 + ": ");
+            }
+    
+        } while (!valid);
+    
+        return input.equals(opt2); // Returns true for second option
+    }
+
     public boolean queryQuitOrRestart() { // Ask user if they want to quit or restart
         String input;
         boolean valid = false;
@@ -195,8 +220,9 @@ public class IO {
         displayMessage("Select a game:");
         displayMessage("1. Slider Game");
         displayMessage("2. Box Game");
-        displayMessage("3. Quit");
-        int choice = queryInt("Enter your choice: ", 1, 3);
+        displayMessage("3. Quoridor Game");
+        displayMessage("4. Quit");
+        int choice = queryInt("Enter your choice: ", 1, 4);
 
         return choice;
     }

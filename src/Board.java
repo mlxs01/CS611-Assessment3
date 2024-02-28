@@ -12,6 +12,11 @@ import java.util.List;
  * as well as validating and executing moves.
  */
 public abstract class Board {
+    //private final int MIN_ROWS = 2;
+    //private final int MIN_COLS = 2;
+    protected final int MIN_VALUE = 0;
+    protected final int MAX_VALUE;
+
     protected Tile[][] tiles;
     protected int width;
     protected int height;
@@ -20,6 +25,7 @@ public abstract class Board {
         setWidth(width);
         setHeight(height);
         tiles = new Tile[height][width];
+        MAX_VALUE = width * height - 1;
         initializeBoard();
         populateBoard(values);
     }

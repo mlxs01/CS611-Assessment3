@@ -17,14 +17,18 @@ public class Factory {
      * Returns the instantiated game object
      */
     public Game makeGame(int selectedGame, IO io) {
+        int teamSize;
         switch (selectedGame) {
             case 1:
                 return new SliderGame(1, 1, io);
             case 2:
                 IO boxIO = new BoxIO(); 
                 // For Dots and Boxes the IO needs to be modified slightly
-                int teamSize = io.getTeamSize();
+                teamSize = io.getTeamSize();
                 return new BoxGame(2, teamSize, boxIO);
+            case 3:
+                teamSize = io.getTeamSize();
+                return new QuoridorGame(2, teamSize, io);
             default:
                 return null;
         }

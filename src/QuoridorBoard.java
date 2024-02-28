@@ -8,7 +8,6 @@ public class QuoridorBoard extends BoxBoard{
     }
 
     @Override
-    // THIS IS NOT DONE YET, I'M WORKING ON GETTING THE TILE VALUES TO PRINT
     public void display() {
         for (int row = 0; row < height; row++) {
             // Print first line

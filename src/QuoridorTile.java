@@ -7,7 +7,7 @@ public class QuoridorTile extends Tile {
 
     @Override
     public boolean isOccupied() {
-        if (super.getPieces().get(5).getColor() == "None"){
+        if (super.getPieces().get(4).getColor() == "None"){
             return false;
         } 
         return true;

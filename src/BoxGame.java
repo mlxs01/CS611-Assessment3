@@ -118,7 +118,6 @@ public class BoxGame extends Game {
                     int newHeight = io.getBoardHeight();
                     this.board = new BoxBoard(newWidth, newHeight, new int[newWidth][newHeight]);
                 } else {
-                    // Generate board with puzzle of same dimensions
                     this.board = new BoxBoard(width, height, new int[width][height]);
                 }
 
