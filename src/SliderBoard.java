@@ -102,7 +102,6 @@ public class SliderBoard extends Board{
     protected void populateBoard(int[][] puzzle) {
         // Check if puzzle dimensions match board dimensions
         if (puzzle.length != height || puzzle[0].length != width) {
-            System.out.println("Puzzle dimensions wrong?");
             throw new IllegalArgumentException("Puzzle dimensions do not match board dimensions");
         }
 

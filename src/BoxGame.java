@@ -20,8 +20,8 @@ public class BoxGame extends Game {
         io.displayMessage("Welcome to the Dots and Boxes Game!");
 
         // Prompt the user for the initial board size
-        int width = io.getBoardWidth();
-        int height = io.getBoardHeight();
+        int width = io.queryInt("Please enter the board width (max 9, min 2): ", Constants.BOARD_MIN_SIZE, Constants.BOARD_MAX_SIZE);
+        int height = io.queryInt("Please enter the board height (max 9, min 2): ", Constants.BOARD_MIN_SIZE, Constants.BOARD_MAX_SIZE);
 
         // Create the initial board
         this.board = new BoxBoard(width, height, new int[width][height]);
@@ -39,12 +39,20 @@ public class BoxGame extends Game {
                 this.board.display();
 
                 // Ask the player for a move
-                int move = io.getPieceMove(); // Assuming getMove() returns the position of a line
-
-                if (move == -1) {
+                int moveTile = io.queryInt("Please enter your choice of tile: ", Constants.QUIT_VALUE, board.MAX_VALUE);
+                if (moveTile == Constants.QUIT_VALUE) {
+                    io.displayMessage("Quitting Game... ");
                     quitter = true; // We have a quitter!
-                    break; // Return to either Mangaer or New Game
+                    break; // Return to either Manager or New Game
                 }
+                int moveDirect = io.queryInt("Please enter the piece you want (north=0, east=1, south=2, west=3) or enter -1 to quit: ", Constants.QUIT_VALUE, 4);
+                if (moveDirect == Constants.QUIT_VALUE) {
+                    io.displayMessage("Quitting Game... ");
+                    quitter = true; // We have a quitter again!
+                    break; // Return to either Manager or New Game
+                }
+
+                int move = ((moveTile * 4) + moveDirect);
 
                 // Check if the move is valid and completes a box
                 boolean[] moveBoolean = board.changePiece(move, currentTeam.getTeamColor());
@@ -106,16 +114,16 @@ public class BoxGame extends Game {
 
             } else {
                 // :D
-                io.displayMessage("Did one of the teams rage quit? WHOOPS XD");
+                io.displayMessage("Did one of the teams rage quit?");
             }
     
             // Ask the player if they want to quit or restart
-            if (io.queryQuitOrRestart()) {
+            if (io.queryBoolean("Do you want to restart or quit?", "r'", "q")) {
     
                 // Ask if the player wants to change the board size
-                if (io.queryChangeBoardSize()) {
-                    int newWidth = io.getBoardWidth();
-                    int newHeight = io.getBoardHeight();
+                if (io.queryBoolean("Do you want change board size?", "y", "n")) {
+                    int newWidth = io.queryInt("Enter the board width (max 9, min 2): ", Constants.BOARD_MIN_SIZE, Constants.BOARD_MAX_SIZE);
+                    int newHeight = io.queryInt("Enter the board height (max 9, min 2): ", Constants.BOARD_MIN_SIZE, Constants.BOARD_MAX_SIZE);            
                     this.board = new BoxBoard(newWidth, newHeight, new int[newWidth][newHeight]);
                 } else {
                     this.board = new BoxBoard(width, height, new int[width][height]);

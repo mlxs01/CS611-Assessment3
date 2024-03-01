@@ -22,12 +22,10 @@ public class Factory {
             case 1:
                 return new SliderGame(1, 1, io);
             case 2:
-                IO boxIO = new BoxIO(); 
-                // For Dots and Boxes the IO needs to be modified slightly
-                teamSize = io.getTeamSize();
-                return new BoxGame(2, teamSize, boxIO);
+                teamSize = io.queryInt("How many team members would you like to have? You can have at most 5.", Constants.TEAM_MIN_SIZE, Constants.TEAM_MAX_SIZE);
+                return new BoxGame(2, teamSize, io);
             case 3:
-                teamSize = io.getTeamSize();
+                teamSize = io.queryInt("How many team members would you like to have? You can have at most 5.", Constants.TEAM_MIN_SIZE, Constants.TEAM_MAX_SIZE);
                 return new QuoridorGame(2, teamSize, io);
             default:
                 return null;
