@@ -13,11 +13,14 @@ public class Colors {
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
     public static final String ANSI_BLUE = "\u001B[34m";
     public static final String ANSI_PURPLE = "\u001B[35m";
+
+    // GREEN is for possible moves, and YELLOW is for wall
     
     public List<String> getPossibleColors() {
-        return Arrays.asList("RED", "GREEN", "BLUE", "PURPLE");
+        return Arrays.asList("RED", "BLUE", "PURPLE");
     }
 
     public String getColor(String colorName) {
@@ -26,6 +29,8 @@ public class Colors {
                 return ANSI_RED;
             case "GREEN":
                 return ANSI_GREEN;
+            case "YELLOW":
+                return ANSI_YELLOW;
             case "BLUE":
                 return ANSI_BLUE;
             case "PURPLE":
