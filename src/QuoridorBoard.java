@@ -4,16 +4,44 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.LinkedList;
+import java.util.List;
 
 public class QuoridorBoard extends BoxBoard{ 
 // What if QuoridorBoard extends BoxBoard? Wouldn't that be better?
+    private String[] teamColors;
 
-    public QuoridorBoard(int width, int height, int[][] values) {
+    public QuoridorBoard(int width, int height, int[][] values, String[] teamcolors) {
         super(width, height, values);
+        setTeamColors(teamcolors);
     }
 
-    @Override
-    public void display() {
+    private void setTeamColors(String[] teamColors) {
+        if (teamColors.length == 0) {
+            throw new IllegalArgumentException("the String[] teamColors passed in to the QuoridorBoard" 
+            + " constructor should not be empty.");
+        }
+        this.teamColors = teamColors;
+    }
+
+    public String[] getTeamColors() {
+        return teamColors;
+    }
+
+    /*
+     * in such a board, a player would start out as in a row, its tile colored blue, tiles of 
+     * possible moves being colored green, and the rest of the row being colored red, and all others
+     * simply white
+     */
+
+    // To display the current state of the board with the possible moves that could be made by the player
+    public void display(String currentTeamColor) {
+        // Find the pawnTile of the currentTeam using the teamColor passed in
+        QuoridorTile currentPawnTile = getCurrentPawnTile(currentTeamColor);
+
+        // Having arrived here, we do have a valid pawnTile for the currentTeam considering
+        Set<QuoridorTile> possibleMoves = possiblePawnMoves(currentPawnTile);
+
+
         for (int row = 0; row < height; row++) {
             // Print first line
             for (int col = 0; col < width; col++) {
@@ -24,15 +52,75 @@ public class QuoridorBoard extends BoxBoard{
                 }
             }
             System.out.println();
+
+            // Print the middle line and the cell contents
             for (int col = 0; col < width; col++) {
                 System.out.print(getVerticalLineColor(row, col, true));
-                System.out.print("  " + ((row * width)+col) + "  ");
+                // The following line is essentially responsible for printing the colored
+                // destination rows, and also for printing the position of the pawn for each team
+
+                /*
+                 * In this case, we see if the currentTile is contain in the possible moves
+                 * 1.) If yes, then we pass in a boolean of true to the getColoredContent
+                 *     indicating for the method to override the color of the content to be green
+                 * 2.) If no, then we pass in a boolean of false, indicating for the method
+                 *     to do its normal routine of considering the player piece over color piece
+                 */
+                QuoridorTile currentTile = getTile(row, col);
+                boolean possibleMove = false;
+                if (possibleMoves.contains(currentTile)) {
+                    possibleMove = true;
+                } 
+                System.out.print(getColoredContent(((row * width)+col) + "", row, col, currentTeamColor, possibleMove));
+
                 if (col + 1 == width) {
                     System.out.print(getVerticalLineColor(row, col, false)); // For edge case
                 }
             }
             System.out.println();
 
+            // To print the bottom row when we reach the last row
+            if (row + 1 == height) { // For edge case
+                for (int col = 0; col < width; col++) {
+                    System.out.print("o");
+                    System.out.print(getLineColor(row, col, false));
+                    if (col + 1 == width) {
+                        System.out.print("o"); // For edge case
+                    }
+                }
+                System.out.println();
+            }
+        }
+    }
+
+    // To display the current state of the board, w/o moves showing
+    @Override
+    public void display() {
+
+        for (int row = 0; row < height; row++) {
+            // Print first line
+            for (int col = 0; col < width; col++) {
+                System.out.print("o");
+                System.out.print(getLineColor(row, col, true));
+                if (col + 1 == width) {
+                    System.out.print("o"); // For edge case
+                }
+            }
+            System.out.println();
+
+            // Print the middle line and the cell contents
+            for (int col = 0; col < width; col++) {
+                System.out.print(getVerticalLineColor(row, col, true));
+                // The following line is essentially responsible for printing the colored
+                // destination rows, and also for printing the position of the pawn for each team
+                System.out.print(getColoredContent(((row * width)+col) + "", row, col, DEFAULTCOLOR, false));
+                if (col + 1 == width) {
+                    System.out.print(getVerticalLineColor(row, col, false)); // For edge case
+                }
+            }
+            System.out.println();
+
+            // To print the bottom row when we reach the last row
             if (row + 1 == height) { // For edge case
                 for (int col = 0; col < width; col++) {
                     System.out.print("o");
@@ -48,7 +136,7 @@ public class QuoridorBoard extends BoxBoard{
 
     @Override    
     protected Tile createTile(int row, int col) {
-        return new QuoridorTile(row, col); // Create a new QuoridorTile object
+        return new QuoridorTile(row, col); // Create a new QuoridorTile object 
     }
 
     @Override
@@ -94,9 +182,86 @@ public class QuoridorBoard extends BoxBoard{
      * 
      */
 
-    // NOTE, "YELLOW" is not in the color bank yet
     private static final String WALLCOLOR = "YELLOW";
     private static final String DEFAULTCOLOR = "None";
+    private static final String POSSIBLEMOVECOLOR = "GREEN";
+    private static final int RIGHTPADDING = 5;
+
+    /*
+     * INPUT: a string that represents a color
+     *      if currentTeamColor is a valid color string, and the board is set up correctly
+     * OUTPUT: the tile containing the pawn of the currentTeam
+     */
+    private QuoridorTile getCurrentPawnTile(String currentTeamColor) {
+        // Get all the pawnTiles on the board
+        Set<QuoridorTile> pawnTiles = getPawnTiles();
+
+        // Get the pawnTile for the currentTeam by matching pieces[5], the teamColor
+        QuoridorTile currentPawnTile = null;
+        for (QuoridorTile pawnTile : pawnTiles) {
+            if (pawnTile.getTileTeam().equals(currentTeamColor)) {
+                currentPawnTile = pawnTile;
+            }
+        }
+
+        if (currentPawnTile == null) {
+            throw new IllegalArgumentException("It is the cases that either the currentTeam Team " + 
+            "does not have a pawn on the board or the input teamColor is invalid: Team" + 
+            currentTeamColor);
+        }
+        return currentPawnTile;
+    }
+
+    /*
+     * INPUT: content: usually a integer value representing the tile value
+     *        row: row of the tile
+     *        col: col of the tile
+     * OUTPUT: a colored string
+     */
+
+     private String getColoredContent(String content, int row, int col, String color, boolean possibleMove) {
+        /*
+         * Priority being:
+         * 1.) color of possibleMove mapped over
+         * 2.) color of teamColor mapped over
+         * 3.) color of tileColor
+         */
+        String colorCode;
+
+        // color of possibleMove
+        if (possibleMove) {
+            colorCode = colors.getColor(POSSIBLEMOVECOLOR);
+        } else {
+            List<Piece> pieces = tiles[row][col].getPieces();
+            // A conditional check with the priority to render the team's pawn color
+            // over the given color of a tile
+            String colorPieceColor = pieces.get(Constants.COLORPIECE).getColor();
+            String teamPieceColor = pieces.get(Constants.TEAMPIECE).getColor();
+            
+            // color of teamColor
+            if (!teamPieceColor.equals(DEFAULTCOLOR)) {
+                colorCode = colors.getColor(teamPieceColor);
+                if (teamPieceColor.equals(color)) {
+                    // Pawn on this tile, using * to represent the pawn being on this tile
+                    content = content + "*";
+                }
+                
+            } else { // No pawn on this tile, then we go on to consider simply the colorPiece
+                colorCode = colors.getColor(colorPieceColor);
+            }
+        }
+
+        // Dynamic padding
+        StringBuilder paddingSB = new StringBuilder();
+        for (int i = 0; i < RIGHTPADDING - content.length(); i++) {
+            paddingSB.append(" ");
+        }
+        String padding = paddingSB.toString();
+
+        // Return the color associated
+        return colorCode + " " + content + padding + Colors.ANSI_RESET;
+        // Reset color after printing the content
+    }
 
     /*
      *
@@ -113,7 +278,7 @@ public class QuoridorBoard extends BoxBoard{
      * OUTPUT: True, if we successfully put down a wall
      *         False, if we failed to put down a wall w/ the given parameters
      */
-    public boolean placeWall(int tileValue, int piecePosition, int wallDir, String[] colors) {
+    public boolean placeWall(int tileValue, int piecePosition, int wallDir) {
         // Check if a wall could be placed down with the input parameters
         boolean isValidWallMove = isValidWallMove(tileValue, piecePosition, wallDir);
 
@@ -136,7 +301,7 @@ public class QuoridorBoard extends BoxBoard{
         updateNeighborTile(neighborTile, piecePosition, WALLCOLOR);
 
         // Get where the pawn of each team is at
-        Set<QuoridorTile> pawnTiles = getPawnTiles(colors);
+        Set<QuoridorTile> pawnTiles = getPawnTiles();
         // Check if the placement of this wall will prevent any pawn from being
         // able to reach its destination
         if (!quoridorBoardBFSWrapper(pawnTiles)) {
@@ -219,7 +384,10 @@ public class QuoridorBoard extends BoxBoard{
      * OUTPUT: true, successfully moved a pawn to the targetTile
      *         false, failed to move a pawn to the targetTile
      */
-    public boolean movePawn(int tileValue, QuoridorTile currentTile) {
+    public boolean movePawn(int tileValue, String currentTeamColor) {
+        // Use currentTeamColor passed in to find the corresponding pawnTile
+        QuoridorTile currentTile = getCurrentPawnTile(currentTeamColor);
+
         // We CANNOT move this pawn as the targetTile from the tileValue is invalid
         if (!isValidPawnMove(tileValue, currentTile)) {
             return false;
@@ -269,6 +437,9 @@ public class QuoridorBoard extends BoxBoard{
      * INPUT: currentTile: tile of the pawn we are currently considering
      * 
      * OUTPUT: Set<QuoridorTile>, the tiles that the pawn could move to
+     * 
+     * NOTE: the input parameter tile has to be a valid tile, cannot be null
+     *       the Set returned could be empty
      */
     private Set<QuoridorTile> possiblePawnMoves(QuoridorTile currentTile) {
         Set<QuoridorTile> possibleMoves = new HashSet<>();
@@ -449,23 +620,38 @@ public class QuoridorBoard extends BoxBoard{
      * 
      * OUTPUT: Set<QuoridorTile>, a set of tiles that each contain a pawn(team)
      */
-    private Set<QuoridorTile> getPawnTiles(String[] colors) {
+    private Set<QuoridorTile> getPawnTiles() {
         Set<QuoridorTile> pawnTiles = new HashSet<>();
 
         // Under the assumption that besides the destination rows, there is only
         // one tile throughout the board with a given color
-        for (String color : colors) {
-            for (int row = 0; row < height; row++) {
-                for (int col = 0; col < width; col++) {
-                    QuoridorTile currentTile = getTile(row, col);
-
-                    if (currentTile.getTileTeam().equals(color)) {
-                        pawnTiles.add(currentTile);
-                    }
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                QuoridorTile currentTile = getTile(row, col);
+                // If there is a pawn on the tile, getTileTeam() is not "None"
+                if (!currentTile.getTileTeam().equals(DEFAULTCOLOR)) {
+                    pawnTiles.add(currentTile);
                 }
             }
         }
         return pawnTiles;
+
+        // for (String color : teamColors) {
+        //     for (int row = 0; row < height; row++) {
+        //         for (int col = 0; col < width; col++) {
+        //             QuoridorTile currentTile = getTile(row, col);
+
+        //             if (!currentTile.getTileTeam().equals(DEFAULTCOLOR)) {
+        //                 pawnTiles.add(currentTile);
+        //             }
+
+        //             if (currentTile.getTileTeam().equals(color)) {
+        //                 pawnTiles.add(currentTile);
+        //             }
+        //         }
+        //     }
+        // }
+        // return pawnTiles;
     }
 
     /*
