@@ -228,6 +228,7 @@ public class QuoridorBoard extends BoxBoard{
     private QuoridorTile getCurrentPawnTile(String currentTeamColor) {
         // Get all the pawnTiles on the board
         Set<QuoridorTile> pawnTiles = getPawnTiles();
+        // System.out.println("pawnTiles = " + pawnTiles.toString());
 
         // Get the pawnTile for the currentTeam by matching pieces[5], the teamColor
         QuoridorTile currentPawnTile = null;
@@ -239,7 +240,7 @@ public class QuoridorBoard extends BoxBoard{
 
         if (currentPawnTile == null) {
             throw new IllegalArgumentException("It is the cases that either the currentTeam Team " + 
-            "does not have a pawn on the board or the input teamColor is invalid: Team" + 
+            "does not have a pawn on the board or the input teamColor is invalid: Team " + 
             currentTeamColor);
         }
         return currentPawnTile;
@@ -286,7 +287,7 @@ public class QuoridorBoard extends BoxBoard{
 
         // Dynamic padding
         StringBuilder paddingSB = new StringBuilder();
-        for (int i = 0; i < RIGHTPADDING - content.length(); i++) {
+        for (int i = 0; i < RIGHTPADDING - content.length() - 1; i++) {
             paddingSB.append(" ");
         }
         String padding = paddingSB.toString();
@@ -450,6 +451,8 @@ public class QuoridorBoard extends BoxBoard{
      */
     private boolean isValidPawnMove(int tileValue, QuoridorTile currentTile) {
         QuoridorTile targetTile = findTileByValue(tileValue);
+        System.out.println("currentTile: " + currentTile);
+        System.out.println("targetTile: " + targetTile);
         if (targetTile == null) {
             return false;
         }
@@ -503,62 +506,64 @@ public class QuoridorBoard extends BoxBoard{
                  * checking one more unit along this cardinal direction:
                  * 1.) If there is a fence or,
                  * 2.) If there is another pawn
+                 * 
+                 * Specifically, if the new coordiantes are now in bound, or 
+                 * there is a fence preventing us going in this direction,
+                 * then we have the decision to go in diagonal directions
                  */
-                else if (areCoordinatesInbound(newRow + dir[0], newCol + dir[1]) && !newTile.hasFence(dirEdge)) {
-
+                else if (!areCoordinatesInbound(newRow + dir[0], newCol + dir[1]) || newTile.hasFence(dirEdge)) { // Go in the diagonal directions
+                    // We cannot move along this cardinal direction, and this means we are allowed
+                    // to jump to diagonal adjacent tiles
+                    
+                    if (dirEdge == Constants.EASTEDGE || dirEdge == Constants.WESTEDGE) {
+                        // Check in the NORTH direction of the newTile and
+                        // attempt to add the upperTile into the possibleMoves
+                        QuoridorTile upperTile = getTile(newRow - 1, newCol);
+                        if (upperTile != null && !newTile.hasFence(Constants.NORTHEDGE)) {
+                            if (!upperTile.isOccupied()) {
+                                possibleMoves.add(upperTile);
+                            }
+                        }
+                        // Check in the SOUTH direction of the newTile and
+                        // attempt to add the lowerTile into the possibleMoves
+                        QuoridorTile lowerTile = getTile(newRow + 1, newCol);
+                        if (lowerTile != null && !newTile.hasFence(Constants.SOUTHEDGE)) {
+                            if (!lowerTile.isOccupied()) {
+                                possibleMoves.add(lowerTile);
+                            }
+                        }
+                    } else if (dirEdge == Constants.NORTHEDGE || dirEdge == Constants.SOUTHEDGE) {
+                        // Check in the WEST direction of the newTile and
+                        // attempt to add the leftTile into the possibleMoves
+                        QuoridorTile leftTile = getTile(newRow, newCol - 1);
+                        if (leftTile != null && !newTile.hasFence(Constants.WESTEDGE)) {
+                            if (!leftTile.isOccupied()) {
+                                possibleMoves.add(leftTile);
+                            }
+                        }
+                        // Check in the EAST direction of the newTile and
+                        // attempt to add the rightTile into the possibleMoves
+                        QuoridorTile rightTile = getTile(newRow, newCol + 1);
+                        if (rightTile != null && !newTile.hasFence(Constants.EASTEDGE)) {
+                            if (!rightTile.isOccupied()) {
+                                possibleMoves.add(rightTile);
+                            }
+                        }
+                    } else {
+                        throw new IllegalArgumentException("Unexpected condition encountered, please debug with the following info: \n" 
+                        + "We are checking in the " + dirEdge + " direction of the currentTile (" 
+                        + currentTileRow + "," + currentTileCol + ").\n");
+                    }
+                }
+                else {
+                    /*
+                     * Else, the behindTile exists, and we check if we could
+                     * jump to this tile
+                     */
                     QuoridorTile behindTile = getTile(newRow + dir[0], newCol + dir[1]);
                     if (!behindTile.isOccupied()) {
                         possibleMoves.add(behindTile);
-
-                    } else {
-                        // We cannot move along this cardinal direction, and this means we are allowed
-                        // to jump to diagonal adjacent tiles
-                        
-                        if (dirEdge == Constants.EASTEDGE || dirEdge == Constants.WESTEDGE) {
-                            // Check in the NORTH direction of the newTile and
-                            // attempt to add the upperTile into the possibleMoves
-                            QuoridorTile upperTile = getTile(newRow - 1, newCol);
-                            if (upperTile != null && !newTile.hasFence(Constants.NORTHEDGE)) {
-                                if (!upperTile.isOccupied()) {
-                                    possibleMoves.add(upperTile);
-                                }
-                            }
-                            // Check in the SOUTH direction of the newTile and
-                            // attempt to add the lowerTile into the possibleMoves
-                            QuoridorTile lowerTile = getTile(newRow + 1, newCol);
-                            if (lowerTile != null && !newTile.hasFence(Constants.SOUTHEDGE)) {
-                                if (!lowerTile.isOccupied()) {
-                                    possibleMoves.add(lowerTile);
-                                }
-                            }
-                        } else if (dirEdge == Constants.NORTHEDGE || dirEdge == Constants.SOUTHEDGE) {
-                            // Check in the WEST direction of the newTile and
-                            // attempt to add the leftTile into the possibleMoves
-                            QuoridorTile leftTile = getTile(newRow, newCol - 1);
-                            if (leftTile != null && !newTile.hasFence(Constants.WESTEDGE)) {
-                                if (!leftTile.isOccupied()) {
-                                    possibleMoves.add(leftTile);
-                                }
-                            }
-                            // Check in the EAST direction of the newTile and
-                            // attempt to add the rightTile into the possibleMoves
-                            QuoridorTile rightTile = getTile(newRow, newCol + 1);
-                            if (rightTile != null && !newTile.hasFence(Constants.EASTEDGE)) {
-                                if (!rightTile.isOccupied()) {
-                                    possibleMoves.add(rightTile);
-                                }
-                            }
-                        } else {
-                            throw new IllegalArgumentException("Unexpected condition encountered, please debug with the following info: \n" 
-                            + "We are checking in the " + dirEdge + " direction of the currentTile (" 
-                            + currentTileRow + "," + currentTileCol + ").\n");
-                        }
                     }
-
-                } else {
-                    throw new IllegalArgumentException("Unexpected condition encountered, please debug with the following info: \n" 
-                    + "We are checking in the " + dirEdge + " direction of the currentTile (" 
-                    + currentTileRow + "," + currentTileCol + ").\n");
                 }
             }
         }

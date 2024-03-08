@@ -1,5 +1,7 @@
 package src;
 
+import java.util.List;
+
 public class QuoridorTile extends Tile {
     public QuoridorTile(int row, int column) {
         super(row, column);
@@ -28,7 +30,7 @@ public class QuoridorTile extends Tile {
 
     // Pieces[5] represents TEAM(color) of the tile
     public String getTileTeam() {
-        return getPieces().get(Constants.TEAMPIECE-1).getColor();
+        return getPieces().get(Constants.TEAMPIECE).getColor();
     }
 
     @Override
@@ -46,5 +48,17 @@ public class QuoridorTile extends Tile {
         // QuoridorTile that we will like to compare
 
         return super.equals(obj);
+    }
+
+    @Override
+    public String toString() {
+        List<Piece> pieces = getPieces();
+        return "This tile is at (" + getRow() + ", " + getColumn() + ")" +
+                ", northEdge: " + pieces.get(Constants.NORTHEDGE) +
+                ", eastEdge: " + pieces.get(Constants.EASTEDGE) +
+                ", southEdge: " + pieces.get(Constants.SOUTHEDGE) +
+                ", westEdge: " + pieces.get(Constants.WESTEDGE) +
+                ", colorPiece: " + pieces.get(Constants.COLORPIECE) +
+                ", teamPiece: " + pieces.get(Constants.TEAMPIECE);
     }
 }
