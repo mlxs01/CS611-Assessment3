@@ -159,7 +159,7 @@ public class QuoridorBoard extends BoxBoard{
 
     @Override
     public boolean[] changePiece(int pieceValue, String color) {
-        
+
         System.out.println("pieceValue=" + pieceValue);
 
         boolean results[] = new boolean[]{false};
@@ -200,6 +200,7 @@ public class QuoridorBoard extends BoxBoard{
                 getTile(i, j).addPiece(new Piece(pieceValue++, "None")); // East
                 getTile(i, j).addPiece(new Piece(pieceValue++, "None")); // South
                 getTile(i, j).addPiece(new Piece(pieceValue++, "None")); // West
+                getTile(i, j).addPiece(new Piece(pieceValue++, "None")); // Color Piece
                 getTile(i, j).addPiece(new Piece(pieceValue++, "None")); // Player Piece
             }
         }

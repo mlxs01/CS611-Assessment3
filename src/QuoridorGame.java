@@ -25,7 +25,7 @@ public class QuoridorGame extends Game{
                 int startPoint = io.queryInt("Enter on which column your player piece starts: ", Constants.MIN_X, width-1);
                 // Say pieceValue is the tile number
                 System.out.println("this should be tile row: " + (height-1)*i + " and tile col: " + startPoint);
-                board.getTile((height-1)*i, startPoint).getPieces().get(Constants.TEAMPIECE-1).setColor(teams[i].getTeamColor());
+                board.getTile((height-1)*i, startPoint).getPieces().get(Constants.TEAMPIECE).setColor(teams[i].getTeamColor());
             }
 
             boolean quitter = gameLoop(currentTeam, currentPlayerIndex);
