@@ -112,15 +112,8 @@ public class QuoridorGame extends Game{
                     quitter = true; // Same quitter as always.
                     break; // Return to either Manager or New Game
                 }
-                int moveDirect = io.queryInt("Enter the direction you want your piece to face (north=0, east=1, south=2, west=3) or enter -1 to quit: ", Constants.QUIT_VALUE, 4);
-                if (moveDirect == Constants.QUIT_VALUE) {
-                    quitter = true; // We have a quitter again!
-                    break; // Return to either Manager or New Game
-                }
 
-                int move = ((moveTile * 4) + moveDirect);
-
-                moveBoolean = board.changePiece(move, currentTeam.getTeamColor());
+                moveBoolean = board.changePiece(moveTile, currentTeam.getTeamColor());
 
                 if (!moveBoolean[0]) {
                     // If the move is invalid

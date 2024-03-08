@@ -164,13 +164,14 @@ public class QuoridorBoard extends BoxBoard{
 
         boolean results[] = new boolean[]{false};
         String codeString = String.valueOf(pieceValue);
-        if (codeString.contains("00")) {
+        if (codeString.contains("00")) { // Player wants to place a wall
             int index[] = filter00(codeString);
             int piecePos[] = findPosition(index[0]); // Tile Value and Piece Dir
             results[0] = placeWall(piecePos[0], piecePos[1], index[1]);
-        } else {
-            int piecePos[] = findPosition(pieceValue); // Tile Value and Piece Dir
-            if (movePawn(piecePos[0], color)){
+        } else { // User wants to move pawn
+            // We already have Tile Value
+                    // at home
+            if (movePawn(pieceValue, color)){
                 results[0] = true; // Pawn was moved successfully
             }
         }
