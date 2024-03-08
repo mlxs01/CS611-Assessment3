@@ -22,32 +22,15 @@ public class QuoridorGame extends Game{
         do {
             // Before anything, ask each team to pick a position on the board for their corresponding player pieces to start at
             for (int i = 0; i < teams.length; i++) {
-                int startPoint = io.queryInt("Enter on which column your player piece starts: ", Constants.MIN_X, width);
+                int startPoint = io.queryInt("Enter on which column your player piece starts: ", Constants.MIN_X, width-1);
                 // Say pieceValue is the tile number
-                board.changePiece(startPoint+((height-1)*width*i), teams[i].getTeamColor());
+                System.out.println("this should be tile row: " + (height-1)*i + " and tile col: " + startPoint);
+                board.getTile((height-1)*i, startPoint).getPieces().get(Constants.TEAMPIECE-1).setColor(teams[i].getTeamColor());
             }
 
             boolean quitter = gameLoop(currentTeam, currentPlayerIndex);
 
-            if (!quitter){
-                board.display(); // Display one last time for user satisfaction
-    
-                teams[0].setNumGames(1);
-                teams[1].setNumGames(1);
-
-                if (teams[0].getTeamNumber() >= teams[1].getTeamNumber()) {
-                    if (teams[1].getTeamNumber() == teams[0].getTeamNumber()) { // It was tie
-                        io.displayMessage("Game Over! It was a tie!");
-                    } else { // Team 0 did best
-                        io.displayMessage("Game Over! " + teams[0].getTeamName() + " wins!");
-                        teams[0].setWins(1); // Increase team's won the game
-                    }
-                } else { // Team 1 did best
-                    io.displayMessage("Game Over! " + teams[1].getTeamName() + " wins!");
-                    teams[1].setWins(1); // Increase team's won the game
-                }
-
-            } else {
+            if (quitter){
                 // :D
                 io.displayMessage("Did one of the teams rage quit? WHOOPS XD");
             }
@@ -148,34 +131,27 @@ public class QuoridorGame extends Game{
             }
 
             currentTeam.setMoves(1); // User successfully made a move
-
-            // Moves tile and bound if the move is valid
-            if (moveBoolean[1]) {
-                io.displayMessage("A box was completed successfully! Same team gets another turn.");
-                currentTeam.incTeamNumber(1);
-                if (moveBoolean[2]) {
-                    currentTeam.incTeamNumber(1); // A really good move just happened
-                }
                 
-                // Check for win condition
-                if (isWin(board)) {
-                    break; // Exit the loop if there's a winner
-                }
-
-                io.displayMessage("As a reward, it's still " + currentPlayer.getName() + "'s turn!");
-            } else {
-                // Normal situation, switch teams display player
-                currentTeam = (currentTeam == teams[0]) ? teams[1] : teams[0];
-                io.displayMessage("Now team " + currentTeam.getTeamName() + "!");
-                
-                if (currentTeam == teams[0]) { // Back to the first team, so iter playerIndex
-                    currentPlayerIndex = (currentPlayerIndex + 1) % currentTeam.getPlayers().size();
-                }
-
-                currentPlayer = currentTeam.getPlayers().get(currentPlayerIndex);
-                io.displayMessage("Now it's " + currentPlayer.getName() + "'s turn!");
+            // Check for win condition
+            if (isWin(board)) {
+                this.board.display(); // Display one last time for user satisfaction
+                // currentTeam reached the end
+                io.displayMessage("Game Over! " + currentTeam.getTeamName() + " wins!");
+                currentTeam.setWins(1); // Increase team's wins
+                break; // Exit the loop if there's a winner
             }
-        
+
+            // Switch teams display player
+            currentTeam = (currentTeam == teams[0]) ? teams[1] : teams[0];
+            io.displayMessage("Now team " + currentTeam.getTeamName() + "!");
+            
+            if (currentTeam == teams[0]) { // Back to the first team, so iter playerIndex
+                currentPlayerIndex = (currentPlayerIndex + 1) % currentTeam.getPlayers().size();
+            }
+
+            currentPlayer = currentTeam.getPlayers().get(currentPlayerIndex);
+            io.displayMessage("Now it's " + currentPlayer.getName() + "'s turn!");
+    
         } while (true); // Run indefinitely until there's a winner
         return quitter;
     }
