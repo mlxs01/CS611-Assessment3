@@ -4,6 +4,7 @@ public class QuoridorGame extends Game{
     public QuoridorGame(int numTeams, int teamSize, IO io) {
         super(numTeams, teamSize, io);
     }
+
     @Override
     public void start() {
         io.displayMessage("Welcome to the Quoridor Game!");
@@ -22,9 +23,11 @@ public class QuoridorGame extends Game{
         do {
             // Before anything, ask each team to pick a position on the board for their corresponding player pieces to start at
             for (int i = 0; i < teams.length; i++) {
-                int startPoint = io.queryInt("Enter on which column your player piece starts: ", Constants.MIN_X, width-1);
+                int startPoint = io.queryInt("Enter on which column your player piece starts: (" +
+                Constants.MIN_X + ", " + (width-1) + ")", Constants.MIN_X, width-1);
                 // Say pieceValue is the tile number
                 System.out.println("this should be tile row: " + (height-1)*i + " and tile col: " + startPoint);
+                initDestinationRowColor((height-1)*(teams.length - 1 - i), teams[i].getTeamColor());
                 board.getTile((height-1)*i, startPoint).getPieces().get(Constants.TEAMPIECE).setColor(teams[i].getTeamColor());
             }
 
@@ -68,12 +71,14 @@ public class QuoridorGame extends Game{
 
         io.displayMessage("Lets start with team " + currentTeam.getTeamName() + "!");
         currentPlayer = currentTeam.getPlayers().get(currentPlayerIndex);
-        io.displayMessage("Now it's " + currentPlayer.getName() + "'s turn!");
+        io.displayMessage("Now it's "+ currentTeam.getTeamColor() +  " Team Player " 
+        + currentPlayer.getName() + "'s turn!");
 
         do {
 
             // Display the current state of the board
-            this.board.display();
+            ((QuoridorBoard) this.board).display(currentTeam.getTeamColor());
+            // this.board.display(currentTeam.getTeamColor());
 
             boolean[] moveBoolean;
             boolean choice = io.queryBoolean("Enter your choice of move, team piece or wall: ", "p", "w");
@@ -149,6 +154,12 @@ public class QuoridorGame extends Game{
         return quitter;
     }
 
+    private void initDestinationRowColor(int row, String teamColor) {
+        for (int i = 0; i < board.getWidth(); i++) {
+            board.getTile(row, i).getPieces().get(Constants.COLORPIECE).setColor(teamColor);
+        }
+    }
+
     private String[] getTeamColors(){
         String teamColors[] = new String[Constants.TEAM_MAX_SIZE]; // Max amount of team colors
         for (int i = 0; i < teams.length; i++){
@@ -161,11 +172,16 @@ public class QuoridorGame extends Game{
     protected boolean isWin(Board board) {
         Tile[][] tiles = board.getTiles(); // Getter for tiles on board
     
+        // teams[0].getTeamColor()
         for (int i=0; i<tiles.length; i++) {
-            if (tiles[tiles.length-1][i].isOccupied() && (tiles[tiles.length-1][i].getPieces().get(4).getColor() == teams[1].getTeamColor())){
+            if (tiles[tiles.length-1][i].isOccupied() &&
+             (tiles[tiles.length-1][i].getPieces().get(Constants.COLORPIECE).getColor()
+             .equals(tiles[tiles.length-1][i].getPieces().get(Constants.TEAMPIECE).getColor()))){
                 return true; // First Team got to bottom of the board
             }
-            if (tiles[board.MIN_VALUE][i].isOccupied() && (tiles[board.MIN_VALUE][i].getPieces().get(4).getColor() == teams[0].getTeamColor())){
+            if (tiles[board.MIN_VALUE][i].isOccupied() && 
+             (tiles[board.MIN_VALUE][i].getPieces().get(Constants.COLORPIECE).getColor()
+             .equals(tiles[board.MIN_VALUE][i].getPieces().get(Constants.TEAMPIECE).getColor()))){
                 return true; // Second Team got to top of the board
             }
         }
