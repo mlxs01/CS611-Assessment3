@@ -70,7 +70,7 @@ public class QuoridorBoard extends BoxBoard{
                 boolean possibleMove = false;
                 if (possibleMoves.contains(currentTile)) {
                     possibleMove = true;
-                } 
+                }
                 System.out.print(getColoredContent(((row * width)+col) + "", row, col, currentTeamColor, possibleMove));
 
                 if (col + 1 == width) {
@@ -141,21 +141,52 @@ public class QuoridorBoard extends BoxBoard{
 
     @Override
     protected int[] findPosition(int pieceValue) {
-        return null;
-    }
+        // Find the position of the piece to be moved
+        int piece = pieceValue % 4; 
 
-    @Override
-    protected boolean isValidMove(int[] positions) {
-        return true;
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                int value = getTile(row, col).getPieces().get(piece).getValue();
+
+                if (value == pieceValue) {
+                    // Returns Tile Value and Piece Dir
+                    return new int[] { (row*width) + col, piece };
+                }
+            }
+        }
+        return null; // Couldn't find tile and piece, something is wrong
     }
 
     @Override
     public boolean[] changePiece(int pieceValue, String color) {
-        return null;
+        
+        System.out.println("pieceValue=" + pieceValue);
+
+        boolean results[] = new boolean[]{false};
+        String codeString = String.valueOf(pieceValue);
+        if (codeString.contains("00")) {
+            int index[] = filter00(codeString);
+            int piecePos[] = findPosition(index[0]); // Tile Value and Piece Dir
+            results[0] = placeWall(piecePos[0], piecePos[1], index[1]);
+        } else {
+            int piecePos[] = findPosition(pieceValue); // Tile Value and Piece Dir
+            if (movePawn(piecePos[0], color)){
+                results[0] = true; // Pawn was moved successfully
+            }
+        }
+        return results;
     }
-    // The Overload
-    public boolean[] changePiece(int pieceValue, int adjValue, String color) {
-        return null;
+
+    private int[] filter00(String value){
+        int[] results = new int[2];
+
+        int index = value.indexOf("00");
+        String pieceValue = value.substring(0, index);
+        String wallDir = value.substring(index + 2);
+        results[0] = Integer.parseInt(pieceValue);
+        results[1] = Integer.parseInt(wallDir);
+
+        return results;
     }
 
     @Override

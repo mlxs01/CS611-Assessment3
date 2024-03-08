@@ -28,7 +28,7 @@ public class QuoridorTile extends Tile {
 
     // Pieces[5] represents TEAM(color) of the tile
     public String getTileTeam() {
-        return getPieces().get(Constants.TEAMPIECE).getColor();
+        return getPieces().get(Constants.TEAMPIECE-1).getColor();
     }
 
     @Override

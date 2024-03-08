@@ -25,75 +25,12 @@ public class BoxGame extends Game {
 
         // Create the initial board
         this.board = new BoxBoard(width, height, new int[width][height]);
-        boolean quitter = false;
         Team currentTeam = teams[0];
         int currentPlayerIndex = 0;
-        Player currentPlayer;
-
 
         do {
-            io.displayMessage("Lets start with team " + currentTeam.getTeamName() + "!");
-            currentPlayer = currentTeam.getPlayers().get(currentPlayerIndex);
-            io.displayMessage("Now it's " + currentPlayer.getName() + "'s turn!");
-            do {
-                // Display the current state of the board
-                this.board.display();
 
-                // Ask the player for a move
-                int moveTile = io.queryInt("Please enter your choice of tile: ", Constants.QUIT_VALUE, board.MAX_VALUE);
-                if (moveTile == Constants.QUIT_VALUE) {
-                    io.displayMessage("Quitting Game... ");
-                    quitter = true; // We have a quitter!
-                    break; // Return to either Manager or New Game
-                }
-                int moveDirect = io.queryInt("Please enter the piece you want (north=0, east=1, south=2, west=3) or enter -1 to quit: ", Constants.QUIT_VALUE, 4);
-                if (moveDirect == Constants.QUIT_VALUE) {
-                    io.displayMessage("Quitting Game... ");
-                    quitter = true; // We have a quitter again!
-                    break; // Return to either Manager or New Game
-                }
-
-                int move = ((moveTile * 4) + moveDirect);
-
-                // Check if the move is valid and completes a box
-                boolean[] moveBoolean = board.changePiece(move, currentTeam.getTeamColor());
-
-                if (!moveBoolean[0]) {
-                    // If the move is invalid
-                    io.displayMessage("Invalid move. Please try again.");
-                    continue;
-                }
-
-                currentTeam.setMoves(1); // User successfully made a move
-
-                // Moves tile and checks if the move is valid
-                if (moveBoolean[1]) {
-                    io.displayMessage("A box was completed successfully! Same team gets another turn.");
-                    currentTeam.incTeamNumber(1);
-                    if (moveBoolean[2]) {
-                        currentTeam.incTeamNumber(1); // A really good move just happened
-                    }
-                    
-                    // Check for win condition
-                    if (isWin(board)) {
-                        break; // Exit the loop if there's a winner
-                    }
-
-                    io.displayMessage("As a reward, it's still " + currentPlayer.getName() + "'s turn!");
-                } else {
-                    // Normal situation, switch teams display player
-                    currentTeam = (currentTeam == teams[0]) ? teams[1] : teams[0];
-                    io.displayMessage("Now team " + currentTeam.getTeamName() + "!");
-                    
-                    if (currentTeam == teams[0]) { // Back to the first team, so iter playerIndex
-                        currentPlayerIndex = (currentPlayerIndex + 1) % currentTeam.getPlayers().size();
-                    }
-
-                    currentPlayer = currentTeam.getPlayers().get(currentPlayerIndex);
-                    io.displayMessage("Now it's " + currentPlayer.getName() + "'s turn!");
-                }
-            
-            } while (true); // Run indefinitely until there's a winner
+            boolean quitter = gameLoop(currentTeam, currentPlayerIndex);
     
             if (!quitter){
                 board.display(); // Display one last time for user satisfaction
@@ -119,7 +56,7 @@ public class BoxGame extends Game {
             }
     
             // Ask the player if they want to quit or restart
-            if (io.queryBoolean("Do you want to restart or quit?", "r'", "q")) {
+            if (io.queryBoolean("Do you want to restart or quit?", "r", "q")) {
     
                 // Ask if the player wants to change the board size
                 if (io.queryBoolean("Do you want change board size?", "y", "n")) {
@@ -141,6 +78,77 @@ public class BoxGame extends Game {
             }
     
         } while (true); // Infinite loop for restarting the game  
+    }
+
+    @Override
+    protected boolean gameLoop(Team currentTeam, int currentPlayerIndex){
+        boolean quitter = false;
+        Player currentPlayer;
+
+        io.displayMessage("Lets start with team " + currentTeam.getTeamName() + "!");
+        currentPlayer = currentTeam.getPlayers().get(currentPlayerIndex);
+        io.displayMessage("Now it's " + currentPlayer.getName() + "'s turn!");
+
+        do {
+            // Display the current state of the board
+            this.board.display();
+
+            // Ask the player for a move
+            int moveTile = io.queryInt("Please enter your choice of tile: ", Constants.QUIT_VALUE, board.MAX_VALUE);
+            if (moveTile == Constants.QUIT_VALUE) {
+                io.displayMessage("Quitting Game... ");
+                quitter = true; // We have a quitter!
+                break; // Return to either Manager or New Game
+            }
+            int moveDirect = io.queryInt("Please enter the piece you want (north=0, east=1, south=2, west=3) or enter -1 to quit: ", Constants.QUIT_VALUE, 4);
+            if (moveDirect == Constants.QUIT_VALUE) {
+                io.displayMessage("Quitting Game... ");
+                quitter = true; // We have a quitter again!
+                break; // Return to either Manager or New Game
+            }
+
+            int move = ((moveTile * 4) + moveDirect);
+
+            // Check if the move is valid and completes a box
+            boolean[] moveBoolean = board.changePiece(move, currentTeam.getTeamColor());
+
+            if (!moveBoolean[0]) {
+                // If the move is invalid
+                io.displayMessage("Invalid move. Please try again.");
+                continue;
+            }
+
+            currentTeam.setMoves(1); // User successfully made a move
+
+            // Moves tile and checks if the move is valid
+            if (moveBoolean[1]) {
+                io.displayMessage("A box was completed successfully! Same team gets another turn.");
+                currentTeam.incTeamNumber(1);
+                if (moveBoolean[2]) {
+                    currentTeam.incTeamNumber(1); // A really good move just happened
+                }
+                
+                // Check for win condition
+                if (isWin(board)) {
+                    break; // Exit the loop if there's a winner
+                }
+
+                io.displayMessage("As a reward, it's still " + currentPlayer.getName() + "'s turn!");
+            } else {
+                // Normal situation, switch teams display player
+                currentTeam = (currentTeam == teams[0]) ? teams[1] : teams[0];
+                io.displayMessage("Now team " + currentTeam.getTeamName() + "!");
+                
+                if (currentTeam == teams[0]) { // Back to the first team, so iter playerIndex
+                    currentPlayerIndex = (currentPlayerIndex + 1) % currentTeam.getPlayers().size();
+                }
+
+                currentPlayer = currentTeam.getPlayers().get(currentPlayerIndex);
+                io.displayMessage("Now it's " + currentPlayer.getName() + "'s turn!");
+            }
+        
+        } while (true); // Run indefinitely until there's a winner
+        return quitter;
     }
 
     @Override

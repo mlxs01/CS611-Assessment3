@@ -29,6 +29,8 @@ public abstract class Game {
     // Abstract method for starting the game
     public abstract void start();
 
+    protected abstract boolean gameLoop(Team currentTeam, int currentPlayerIndex);
+
     // Abstract method to check for win condition
     protected abstract boolean isWin(Board board);
 
