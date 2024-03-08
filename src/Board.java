@@ -49,7 +49,7 @@ public abstract class Board {
     protected void initializeBoard() {
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
-                tiles[row][col] = createTile(row, col); // Factory method for creating tiles
+                tiles[row][col] = createTile(row, col);
             }
         }
     }
@@ -70,7 +70,7 @@ public abstract class Board {
     }
 
     protected boolean isValueInbound(int value) {
-        return MIN_VALUE <= value && value < MAX_VALUE;
+        return MIN_VALUE <= value && value <= MAX_VALUE;
     }
 
     protected boolean areCoordinatesInbound(int row, int col) {
@@ -82,7 +82,6 @@ public abstract class Board {
         if (isValueInbound(value)) {
             int row = value / width;
             int col = value % width;
-
             return getTile(row, col);
         }
         return null;
