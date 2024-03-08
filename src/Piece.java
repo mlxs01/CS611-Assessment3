@@ -41,4 +41,8 @@ public class Piece {
         this.color = color;
     }
     
+    @Override
+    public String toString() {
+        return getColor() + "";
+    }
 }
