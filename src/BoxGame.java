@@ -30,6 +30,7 @@ public class BoxGame extends Game {
         int currentPlayerIndex = 0;
         Player currentPlayer;
 
+
         do {
             io.displayMessage("Lets start with team " + currentTeam.getTeamName() + "!");
             currentPlayer = currentTeam.getPlayers().get(currentPlayerIndex);

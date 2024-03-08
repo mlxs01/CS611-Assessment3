@@ -56,5 +56,28 @@ public class Tile {
         }
         return true;
     }
+
+    // If the board is initiated correctly, then the (row, col) combination of each
+    // tile is unique
+    // Given equals() has an input parameter of Object, to oevrride it, we must 
+    // have the same signatures
+    @Override
+    public boolean equals(Object obj) {
+        // If the two have the same memory address
+        if (this == obj) {
+            return true;
+        }
+
+        // If tile is null, or if tile is of a different class from this
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        // Having arrived here, obj is not this but has the same class as this
+        Tile other = (Tile) obj;
+
+        // Compare properties
+        return row == other.getRow() && column == other.getColumn();
+    }
 }
 

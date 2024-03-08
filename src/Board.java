@@ -59,11 +59,33 @@ public abstract class Board {
     }
 
     public Tile getTile(int row, int col) {
-        return tiles[row][col];
+        if (areCoordinatesInbound(row, col)) {
+            return tiles[row][col];
+        }
+        return null;
     }
 
     public Tile[][] getTiles(){
         return tiles;
+    }
+
+    protected boolean isValueInbound(int value) {
+        return MIN_VALUE <= value && value < MAX_VALUE;
+    }
+
+    protected boolean areCoordinatesInbound(int row, int col) {
+        return !(row < Constants.MIN_X || col < Constants.MIN_Y || row >= height || col >= width);
+    }
+
+    // Will only return a Tile for a value that is within bounds
+    public Tile findTileByValue(int value) {
+        if (isValueInbound(value)) {
+            int row = value / width;
+            int col = value % width;
+
+            return getTile(row, col);
+        }
+        return null;
     }
 
     public void display() {
