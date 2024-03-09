@@ -156,37 +156,32 @@ public class QuoridorBoard extends BoxBoard{
         }
         return null; // Couldn't find tile and piece, something is wrong
     }
-
-    @Override
-    public boolean[] changePiece(int pieceValue, String color) {
-
-        System.out.println("pieceValue=" + pieceValue);
-
+    
+    /*
+     * Represents the occasion when the user wants to place down a wall
+     */
+    public boolean[] changePiece(int tileValue, int wallDir, int wallExtendDir) {
+        System.out.println("tileValue=" + tileValue + ", wallDir=" + wallDir + ", wallExtendDir=" + wallExtendDir);
         boolean results[] = new boolean[]{false};
-        String codeString = String.valueOf(pieceValue);
-        if (codeString.contains("00")) { // Player wants to place a wall
-            int index[] = filter00(codeString);
-            int piecePos[] = findPosition(index[0]); // Tile Value and Piece Dir
-            results[0] = placeWall(piecePos[0], piecePos[1], index[1]);
-        } else { // User wants to move pawn
-            // We already have Tile Value
-                    // at home
-            if (movePawn(pieceValue, color)){
-                results[0] = true; // Pawn was moved successfully
-            }
+
+        if (placeWall(tileValue, wallDir, wallExtendDir)) {
+            results[0] = true; // Pawn was moved successfully
         }
         return results;
     }
 
-    private int[] filter00(String value){
-        int[] results = new int[2];
+    /*
+     * Represents the occasion when the user wants to move pawn
+     */
+    @Override
+    public boolean[] changePiece(int pieceValue, String color) {
 
-        int index = value.indexOf("00");
-        String pieceValue = value.substring(0, index);
-        String wallDir = value.substring(index + 2);
-        results[0] = Integer.parseInt(pieceValue);
-        results[1] = Integer.parseInt(wallDir);
+        System.out.println("pieceValue=" + pieceValue);
+        boolean results[] = new boolean[]{false};
 
+        if (movePawn(pieceValue, color)) {
+            results[0] = true; // Pawn was moved successfully
+        }
         return results;
     }
 
@@ -314,7 +309,9 @@ public class QuoridorBoard extends BoxBoard{
      */
     public boolean placeWall(int tileValue, int piecePosition, int wallDir) {
         // Check if a wall could be placed down with the input parameters
+        // System.out.println("Doing isValidWallMove...");
         boolean isValidWallMove = isValidWallMove(tileValue, piecePosition, wallDir);
+        // System.out.println("Finished isValidWallMove, and the result is: " + isValidWallMove);
 
         if (!isValidWallMove) {
             return false; // Failed to place down a wall
@@ -345,6 +342,8 @@ public class QuoridorBoard extends BoxBoard{
             neighborTile.getPieces().get(piecePosition).setColor(DEFAULTCOLOR);
             updateNeighborTile(targetTile, piecePosition, DEFAULTCOLOR);
             updateNeighborTile(neighborTile, piecePosition, DEFAULTCOLOR);
+
+            return false; // Failed to place down a valid wall
         } // Else, the placement of this wall does allow possible traversals to the destinations
         
         // Having arrived here, we have successfully placed down a valid wall
@@ -356,11 +355,14 @@ public class QuoridorBoard extends BoxBoard{
      */
     private boolean isValidWallMove(int tileValue, int piecePosition, int wallDir) {
         QuoridorTile targetTile = findTileByValue(tileValue);
+        // System.out.println("Checking if targetTile exists: " + targetTile);
         if (targetTile == null) {
             return false;
         }
 
         // See if we could put down one piece of the wall on the specified piece
+        // System.out.println("Checking if we could place down on piece of the" +
+        //     " wall at this piece position of the tile.");
         if (targetTile.hasFence(piecePosition)) {
             return false;
         }
@@ -370,14 +372,16 @@ public class QuoridorBoard extends BoxBoard{
             case Constants.NORTHEDGE:
             case Constants.SOUTHEDGE:
                 // Can only extend the wall to EAST or WEST
-                if (wallDir != Constants.EASTEDGE || wallDir != Constants.WESTEDGE) {
+                // Return false if wallDir is not equal to both EAST and WEST
+                if (wallDir != Constants.EASTEDGE && wallDir != Constants.WESTEDGE) {
                     return false;
                 }
                 break;
             case Constants.EASTEDGE:
             case Constants.WESTEDGE:
                 // Can only extend the wall to NORTH or SOUTH
-                if (wallDir != Constants.NORTHEDGE || wallDir != Constants.SOUTHEDGE) {
+                // Return false if wallDir is not equal to both NORTH and SOUTH
+                if (wallDir != Constants.NORTHEDGE && wallDir != Constants.SOUTHEDGE) {
                     return false;
                 }
                 break;
@@ -451,8 +455,8 @@ public class QuoridorBoard extends BoxBoard{
      */
     private boolean isValidPawnMove(int tileValue, QuoridorTile currentTile) {
         QuoridorTile targetTile = findTileByValue(tileValue);
-        System.out.println("currentTile: " + currentTile);
-        System.out.println("targetTile: " + targetTile);
+        // System.out.println("currentTile: " + currentTile);
+        // System.out.println("targetTile: " + targetTile);
         if (targetTile == null) {
             return false;
         }
