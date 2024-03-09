@@ -1,10 +1,10 @@
 
-# CS611-Assignment 2
+# CS611-Assignment 3
 ## Name of Assignment
 ---------------------------------------------------------------------------
-Name: Michelle Sun
-Email: mlxs@bu.edu
-Student ID: U14824452
+Name: Tony Cen, Michelle Sun
+Email: tcen17@bu.edu, mlxs@bu.edu
+Student ID: U30361395, U14824452
 
 ## Files
 ---------------------------------------------------------------------------
@@ -21,6 +21,7 @@ Team.java: This class provides the team structure, holds the values of team(s).
     - Team stats and a List of player objects
 Player.java: This class provides a place to house player information: player name.
 Color.java: This class provides all possible the colors for any game.
+Constants.java: This class provides all global constants for any game.
 
 Java files for specific games:
 SliderGame.java: This class provides the Sliding Window game's structure and logic.
@@ -28,44 +29,30 @@ Generate.java: This class provides the Sliding Window game's puzzle generation.
 SliderBoard.java: This class provides the Sliding Window game's board structure: board elements, enforce board bounds, etc.
 BoxGame.java: This class provides the Dots and Boxes game's structure and logic.
 BoxBoard.java: This class provides the box board structure: board elements, enforce board bounds, etc.
-BoxIO.java: This class extends the I/O class for any game, but adds specific behaviour for the Dots and Boxes game.
+QuoridorGame.java: This class provides the Quoridor game's structure and logic
+QuoridorBoard.java: This class provides the the quoridor board structure: board elements, placeWall, movePiece, etc.
+    - This extends from BoxBoard
+QuoridorTiles.java: This class implements Tile class and provides the specific tiles for Quoridor board.
 
-## Notes (I used this kind of like a diary)
+## Notes (No diary this time, collaboration notes instead)
 ---------------------------------------------------------------------------
 
-2/14a: Starting off, I'm thinking of ways to abstract out my previous code so that the Box game can exist.
-2/14b: Given that the stuff in SliderBoard don't exist on every board (generating puzzle), I made a new, more general Board.java
-2/16a: So the plan is to have a Game.java that holds everything a general game should logically have. 
-2/16b: Remembering that the user shoud be able to play any game, I'm thinking of adding a "GameManager" init any given game.
-2/16c: I'm having a hard time getting a good design for this program. Having troubles connecting Board to Game.
-2/16d: I've decided, implementing a design pattern right now is too much for my puny brain, I will stick to abstract classes and \
-confined methods.
-2/17a: I think the last couple days I was overwhelmed with the amount of thing I needed to do so I just dived into a deep and confusing \
-rabbit hole.
-2/17b: I started by trying to correct the formatting for the abstract class Board to be able to create both SliderBoard and BoxBoard.
-2/18a: I'm started looking at the Game.java that extends to SliderGame and BoxGame, I realized that I need to make a Team.java and \
-change the previous Player.java. I also added methods to IO to prompt for team info.
-2/18b: Okay, I've got everything loosely wired together now. I have debugged most of the SliderGame and will continue to make sure it is \
-tip-top shape. After that, I will be debugging BoxGame. I don't think I will have the energy to abstract this more right now, but I can see a \
-Factory class for this code. 
-2/19a: Finished debugging SliderGame, also I forgot to add a way to quit from the game in the middle of the game, so I will add that now.
-2/19b: I learned how to use one line if-statements! Pretty cool. I am still trying to debug BoxGame, I think I need to rest the brain for a \
-bit before I can continue. Hopefully tomorrow will be the last day. (Update: That day was not the last day :,D)
-2/20a: Realized there was a problem with my isValidMove method, it only works on East-West facing tiles.
-2/20b: I learned that the Teams shouldn't be just two teams, but multiple. I can cap it at how many colors there are, so in my case, 5.
-2/20c: Yes.. Things are working correctly. Finally, I'm almost done finally. 
-2/20d: I will like to say, my SliderGame doesn't implement color, because color is for inidicating Teams right now. \
-Totally not becuase it isn't of the highest priority right now.
-2/20e: I learned that I could just have multiple ppls in a team, so I'll do that instead. Just kinda have the forloop go through the players.
-2/20f: Please, I want to stop looking at this code soon, I'm so sleepy ;-; I should finish the readme and code checking by end of tomorrow. 
-2/21a: Okay I think most things are done. I will check through the execution and then add some headers.
-2/21b: I last minute decided I should have a Factory.java since it really doesn't make sense to have the GameManager make the board games. \
-Especially since the GameManager's sole job is to communicate with users about what game they want to play.
-2/21c: Really last minute stuff, I realized that although my program was working, it seems to display the exact opposite board length to what \
-I wanted. For example, choosing width 2 and height 5 would give me a board that was 2 tall 5 wide. I've made the corrections to have it work now.\  
-At some point while fixing this, I felt like "oh maybe I should just say in notes that when I say width I mean the opposite" but I mean.. I \
-think I've fixed the program so everything should work completely fine. I'm just a bit scared since I found this error extremely last minute. \
-I hope for the best.
+2/22 - Tony and I have our first, and only meeting for the project. We breakdown (very loosely) what methods should be used and how \
+the logic should flow between each class. We decided to use my implementatino as the base program we build off of.
+2/25 - I forgor to add my UML so Tony can understand my code's logic without staring at it for a millenium.
+2/26 - I start setting up for Quoridor: Made a Constatns, Quoridor Board and Game, as well as Quoridor Tiles as Quoridor needs more \
+specific methods then regular Tiles.
+2/27a - Looking at Tony's implementation, I find that having a more generic IO class with basic queries to integer, string, or boolean \
+would be better for the overall games the IO will go into.
+2/27b - (Lies) I completed isWin and Player input methods for the Quoridor game. I did not, I just gave pseudocode. 
+(I did change this later.)
+3/1a - Expanded my "more generic IO" changes to all other games in file. 
+3/1b to 3/6 - Tony pushed his work for the project, that is, updating the Player-Team to be more specific, as well as the move checking \
+logic for the Quoridor game. This also means implementing the BFS part of the game.
+3/8 - Tony and I went through the code and started debugging the game. I connected Tony's methods and other creations to my base program \
+and tried to help with debugging. Though, ultimately, Tony did most of the debugging because I cannot read c,:
+3/9 - I am not finishing up the documentation for the whole program and giving the program a wholistic run through to make sure no bugs. \
+It's time to submit!
 
 ## Citaions
 ---------------------------------------------------------------------------
@@ -81,12 +68,14 @@ https://www.codeproject.com/Articles/5329247/How-to-Change-Text-Color-in-a-Linux
 
 My brain, used for getting each piece's counterpart piece. (My brain is perpetually fried.)
 
+Combined brains, but mostly Tony's brain. Used for remodeling the IO system and piece/wall validation for Quoridor Game.
+
 Tabnine was used for ease of coding. (Repeating Getter and Setters methods, Autofill comments, etc.)
 
 ## How to compile and run
 ---------------------------------------------------------------------------
 
-1. Navigate to the directory "HW2" after unzipping the files
+1. Navigate to the directory "HW3" after unzipping the files
     1a. If there is no such directory, then just make sure you are outside of src.
 2. Run the following instructions:
 javac -d bin src/Main.java
@@ -102,7 +91,8 @@ Output:
 [>] Select a game:
 [>] 1. Slider Game
 [>] 2. Box Game
-[>] 3. Quit
+[>] 3. Quoridor Game
+[>] 4. Quit
 [>] Enter your choice: 
 Input:
 0
@@ -123,7 +113,7 @@ Input:
 cyan
 Output:
 [>] Invalid color. Please try again.
-[>] Here are the valid colors: [RED, GREEN, BLUE, PURPLE]
+[>] Here are the valid colors: [RED, BLUE, PURPLE]
 [>] Enter your team color: 
 Input:
 blue
@@ -223,10 +213,12 @@ Output:
 [>] Total Games: 1
 [>] Players: 
 Bob  
+[>] Welcome!
 [>] Select a game:
 [>] 1. Slider Game
 [>] 2. Box Game
-[>] 3. Quit
+[>] 3. Quoridor Game
+[>] 4. Quit
 [>] Enter your choice: 
 Input: 
 2
@@ -272,7 +264,7 @@ Input:
 blue
 Output:
 [>] Invalid color. Please try again.
-[>] Here are the valid colors: [RED, GREEN, PURPLE]
+[>] Here are the valid colors: [RED, PURPLE]
 [>] Enter your team color: 
 Input:
 red 
@@ -555,12 +547,190 @@ Cinnamon  Toast  Crunch
 [>] Total Games: 1
 [>] Players: 
 Candy  Tammy  Cabby  
+[>] Welcome!
 [>] Select a game:
 [>] 1. Slider Game
 [>] 2. Box Game
-[>] 3. Quit
+[>] 3. Quoridor Game
+[>] 4. Quit
 [>] Enter your choice: 
 Input:
 3
+Output:
+[>] How many team members would you like to have? You can have at most 5.
+Input:
+1
+Output:
+[>] Time to make some team(s)!
+[>] Come up team 1!
+[>] Enter your team name: 
+Input:
+1
+Output:
+[>] What is your team color? 
+Input:
+red
+Output:
+[>] Let's get some team member names!
+[>] Come forward team player 1.
+[>] What is your name? 
+Input:
+1
+Output:
+[>] Come up team 2!
+[>] Enter your team name: 
+Input:
+2
+Output:
+[>] What is your team color? 
+Input:
+blue
+Output:
+[>] Let's get some team member names!
+[>] Come forward team player 1.
+[>] What is your name? 
+Input:
+2
+Output:
+[>] Welcome to the Quoridor Game!
+[>] Enter the board width (max 9, min 2): 
+Input:
+2
+Output:
+[>] Enter the board height (max 9, min 2): 
+Input:
+2
+Output:
+[>] Enter on which column your player piece starts: (0, 1)
+Input:
+1
+Output:
+[>] Enter on which column your player piece starts: (0, 1)
+Input:
+0
+Output:
+[>] Lets start with team 1!
+[>] Now it's RED Team Player 1's turn!
+o-----o-----o
+| 0   | 1*  |
+o-----o-----o
+| 2   | 3   |
+o-----o-----o
+[>] Enter your choice of move, team piece or wall: (p/w): 
+Input:
+p
+Output:
+[>] Enter which tile you want to move your team piece: 
+Input:
+3
+Output:
+o-----o-----o
+| 0   | 1   |
+o-----o-----o
+| 2   | 3   |
+o-----o-----o
+[>] Game Over! 1 wins!
+[>] Do you want to restart or quit?(r/q): 
+Input:
+r
+Output:
+[>] Do you want change board size?(y/n): 
+Input:
+y
+Output:
+[>] Enter on which column your player piece starts: (0, 1)
+Input:
+0
+Output:
+[>] Enter on which column your player piece starts: (0, 1)
+Input:
+1
+Output:
+[>] Lets start with team 1!
+[>] Now it's RED Team Player 1's turn!
+o-----o-----o
+| 0*  | 1   |
+o-----o-----o
+| 2   | 3   |
+o-----o-----o
+[>] Enter your choice of move, team piece or wall: (p/w): 
+Input:
+w
+Output:
+[>] Please enter your choice of tile: 
+Input:
+2
+Output:
+[>] Enter the direction you want your wall to face (north=0, east=1, south=2, west=3) or enter -1 to quit: 
+Input:
+0
+Output:
+[>] Enter the direction you want your wall to extend (north=0, east=1, south=2, west=3) or enter -1 to quit: 
+Input:
+1
+Output:
+[>] Invalid move. Please try again.
+o-----o-----o
+| 0*  | 1   |
+o-----o-----o
+| 2   | 3   |
+o-----o-----o
+[>] Enter your choice of move, team piece or wall: (p/w): 
+Input:
+w
+Output:
+[>] Please enter your choice of tile: 
+Input:
+2
+Output:
+[>] Enter the direction you want your wall to face (north=0, east=1, south=2, west=3) or enter -1 to quit: 
+Input:
+3
+Output:
+[>] Enter the direction you want your wall to extend (north=0, east=1, south=2, west=3) or enter -1 to quit: 
+Input:
+0
+Output:
+[>] Now team 2!
+[>] Now it's 2's turn!
+o-----o-----o
+| 0   | 1   |
+o-----o-----o
+| 2   | 3*  |
+o-----o-----o
+[>] Enter your choice of move, team piece or wall: (p/w): 
+Input:
+p
+Output:
+[>] Enter which tile you want to move your team piece: 
+Input:
+-1
+Output:
+[>] Did one of the teams rage quit? WHOOPS XD
+[>] Do you want to restart or quit?(r/q): 
+Input:
+q
+Output:
+[>] Thanks for playing Quoridor!
+[>] Here is for team 1:
+[>] Wins: 0
+[>] Total Moves: 1
+[>] Total Games: 0
+[>] Players: 
+1  
+[>] Here is for team 2:
+[>] Wins: 1
+[>] Total Moves: 1
+[>] Total Games: 0
+[>] Players: 
+2  
+[>] Select a game:
+[>] 1. Slider Game
+[>] 2. Box Game
+[>] 3. Quoridor Game
+[>] 4. Quit
+[>] Enter your choice: 
+Input:
+4
 Output:
 [>] Thanks for playing! Goodbye!
