@@ -88,22 +88,20 @@ public class QuoridorGame extends Game{
                     quitter = true; // We have a quitter!
                     break; // Return to either Manager or New Game
                 }
-                int movePieceDirect = io.queryInt("Enter the direction you want your piece to face (north=0, east=1, south=2, west=3) or enter -1 to quit: ", Constants.QUIT_VALUE, 4);
-                if (movePieceDirect == Constants.QUIT_VALUE) {
+                int wallDir = io.queryInt("Enter the direction you want your wall to face (north=0, east=1, south=2, west=3) or enter -1 to quit: ", Constants.QUIT_VALUE, 4);
+                if (wallDir == Constants.QUIT_VALUE) {
                     quitter = true; // We have a quitter again!
                     break; // Return to either Manager or New Game
                 }
-                int moveDirect = io.queryInt("Enter the direction you want your wall to face (north=0, east=1, south=2, west=3) or enter -1 to quit: ", Constants.QUIT_VALUE, 4);
-                if (moveDirect == Constants.QUIT_VALUE) {
+                int wallExtendDir = io.queryInt("Enter the direction you want your wall to extend (north=0, east=1, south=2, west=3) or enter -1 to quit: ", Constants.QUIT_VALUE, 4);
+                if (wallExtendDir == Constants.QUIT_VALUE) {
                     quitter = true; // We have a quitter again!
                     break; // Return to either Manager or New Game
                 }
 
-                // Do some cheeky Integer String manipulation
-                int movePieceValue = ((moveTile * 4) + moveDirect);
-                int move = Integer.parseInt(Integer.toString(movePieceValue) + "00" + Integer.toString(moveDirect));
 
-                moveBoolean = board.changePiece(move, currentTeam.getTeamColor());
+                moveBoolean = ((QuoridorBoard) board).changePiece(moveTile, wallDir, wallExtendDir);
+                // moveBoolean = board.changePiece(move, currentTeam.getTeamColor());
 
                 if (!moveBoolean[0]) {
                     // If the move is invalid
