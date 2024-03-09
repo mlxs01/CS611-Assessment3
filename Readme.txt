@@ -36,6 +36,7 @@ QuoridorTiles.java: This class implements Tile class and provides the specific t
 
 ## Notes (No diary this time, collaboration notes instead)
 ---------------------------------------------------------------------------
+NOTE!!!: the ANSI color of yellow used for walls is very similar to white in the terminal, so please squint HARD!
 
 2/22 - Tony and I have our first, and only meeting for the project. We breakdown (very loosely) what methods should be used and how \
 the logic should flow between each class. We decided to use my implementatino as the base program we build off of.
@@ -51,7 +52,7 @@ would be better for the overall games the IO will go into.
 logic for the Quoridor game. This also means implementing the BFS part of the game.
 3/8 - Tony and I went through the code and started debugging the game. I connected Tony's methods and other creations to my base program \
 and tried to help with debugging. Though, ultimately, Tony did most of the debugging because I cannot read c,:
-3/9 - I am not finishing up the documentation for the whole program and giving the program a wholistic run through to make sure no bugs. \
+3/9 - I am now finishing up the documentation for the whole program and giving the program a wholistic run through to make sure no bugs. \
 It's time to submit!
 
 ## Citaions
@@ -66,9 +67,14 @@ was used to understand list in java better.
 
 https://www.codeproject.com/Articles/5329247/How-to-Change-Text-Color-in-a-Linux-Terminal used for color.
 
+https://www.themindcafe.sg/wp-content/uploads/2018/04/Quoridor.pdf used to understand the rules of Quoridor,
+and aid in implementing the movePawn() and placeWall() methods
+
 My brain, used for getting each piece's counterpart piece. (My brain is perpetually fried.)
 
 Combined brains, but mostly Tony's brain. Used for remodeling the IO system and piece/wall validation for Quoridor Game.
+
+Note from Tony: the template for BFS came from the work I did in CS440
 
 Tabnine was used for ease of coding. (Repeating Getter and Setters methods, Autofill comments, etc.)
 
